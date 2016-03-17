@@ -1,4 +1,4 @@
-```
+
 #! /usr/bin/env python3
 # variance.py - module to calculate variance and standard deviation from Excel file
 
@@ -64,4 +64,4 @@ print("Range of one standard deviation is between ", round(lowScoreLimit,2), "an
 
 print(len(withinRangeList)/len(scores) * 100,"% of scores are within one standard deviation of the mean.")
 
-```
+
