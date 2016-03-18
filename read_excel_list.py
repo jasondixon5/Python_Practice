@@ -27,12 +27,12 @@ wb = openpyxl.load_workbook(fullFilename)
 workingTab = wb.get_sheet_by_name(tabName)
 
 startCell = workingTab[startCellReference]
-startRowNumber = int('{}'.format(startCell.row))
+startRowNumber = startCell.row
 
 # Get number version of column reference: Take cell reference provided, get letter for column, then get the ASCII number for the letter and subtract 64, so that "A" corresponds to "1".
 
 # WARNING - Works for columns A - Z but not beginning with AA
-startColumnLetter = '{}'.format(startCell.column)
+startColumnLetter = startCell.column
 startColumnNumber = ord(startColumnLetter) - 64
  
 numbers = [workingTab.cell(row=row, column=startColumnNumber).value for row in range(startRowNumber, startRowNumber + lengthList)]
