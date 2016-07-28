@@ -20,10 +20,10 @@ n_female = sum(female_observed)
 observations = list(zip(male_observed, female_observed))
 
 
-male_promotion_rate = observations[promoted_idx][male_idx] / n_male
-female_promotion_rate = observations[promoted_idx][female_idx] / n_female
+promotion_rate_male = observations[promoted_idx][male_idx] / n_male
+promotion_rate_female = observations[promoted_idx][female_idx] / n_female
 
-promotion_rate_difference = male_promotion_rate - female_promotion_rate
+difference_promotion_rate_m2f = promotion_rate_male - promotion_rate_female
 
 """
 Run a simulation of the male and female promotion rates received due to chance.
@@ -35,48 +35,75 @@ simulation_female_n = sum(female_observed)
 simulation_promoted_n = sum(observations[promoted_idx])
 simulation_not_promoted_n = sum(observations[not_promoted_idx])
 
-#Count number of female promotions in one random simulation (as test)
-simulated_female_promotions = sum(1 if random.random() < 0.5 else 0 for _ in range(simulation_female_n))
+simulated_results_promoted_female = 0
+simulated_results_promoted_male = 0
+simulated_results_not_promoted_female = 0
+simulated_results_not_promoted_male = 0
 
-#Count number of male promotions in one random simulation (as test)
-simulated_male_promotions = sum(1 if random.random() < 0.5 else 0 for _ in range(simulation_male_n))
+"""
+Given same number of promoted as originally observed, run simulation
+Count how many female and how many male would be promoted by chance
+"""
+for _ in range(simulation_promoted_n):
+    if random.random() < 0.5:
+        simulated_results_promoted_female += 1
+    else:
+        simulated_results_promoted_male += 1
 
-#Calculate female promotion rate in one random simulation
-simulated_female_promotion_rate = simulated_female_promotions / simulation_female_n
-
-#Calculate male promotion rate in one random simulation
-simulated_male_promotion_rate = simulated_male_promotions / simulation_male_n
-
-#Begin simulation of female promotions in 1000 simulations
-simulated_female_promotion_values = [ ]
-
-for _ in range(1000):
-    simulated_female_promotion_values.append(sum(1 if random.random() < 0.5 else 0 for _ in range(simulation_female_n)))
-    
-simulated_female_promotion_values_np = np.array([simulated_female_promotion_values])
-
-simulated_female_promotion_rates = simulated_female_promotion_values_np / simulation_female_n
-
-#Begin simulation of female promotions in 1000 simulations
-simulated_male_promotion_values = [ ]
-
-for _ in range(1000):
-    simulated_male_promotion_values.append(sum(1 if random.random() < 0.5 else 0 for _ in range(simulation_male_n)))
-    
-simulated_male_promotion_values_np = np.array([simulated_male_promotion_values])
-
-simulated_male_promotion_rates = simulated_male_promotion_values_np / simulation_male_n
-
-count_of_above_actual_female_promotion_rate = 0
-for _ in simulated_female_promotion_rates[0]:
-    if _ >= female_promotion_rate:
-        count_of_above_actual_female_promotion_rate += 1
-
-prob_of_actual_female_promotion_rate = count_of_above_actual_female_promotion_rate / len(simulated_female_promotion_rates[0])
-
-count_of_above_actual_male_promotion_rate = 0
-for _ in simulated_male_promotion_rates[0]:
-    if _ >= male_promotion_rate:
-        count_of_above_actual_male_promotion_rate += 1
+"""
+Given same number of not promoted as originally observed, run simulation
+Count how many female and how many male would not be promoted by chance
+"""
         
-prob_of_actual_male_promotion_rate = count_of_above_actual_female_promotion_rate / len(simulated_female_promotion_rates[0])
+for _ in range(simulation_not_promoted_n):
+    if random.random() < 0.5:
+        simulated_results_not_promoted_female += 1
+    else:
+        simulated_results_not_promoted_male += 1
+        
+
+assert (simulated_results_promoted_female + simulated_results_promoted_male) == simulation_promoted_n, "error in simulation promoted counts"
+
+assert (simulated_results_not_promoted_female + simulated_results_not_promoted_male) == simulation_not_promoted_n, "error in simulation not promoted counts"
+
+#Calculate simulated promotion and not promoted rates by gender
+simulated_promoted_rate_female = simulated_results_promoted_female / simulation_promoted_n
+
+simulated_promoted_rate_male = simulated_results_promoted_male / simulation_promoted_n
+
+simulated_not_promoted_rate_female = simulated_results_not_promoted_female / simulation_not_promoted_n
+
+simulated_not_promoted_rate_male = simulated_results_not_promoted_male / simulation_not_promoted_n
+
+difference_in_simulated_promotion_rate_m2f = simulated_promoted_rate_male - simulated_promoted_rate_female
+
+"""
+Calculate difference between observed and simulated
+i.e., difference between the difference between male and female promotion rates
+"""
+difference_observed_and_simulated = difference_promotion_rate_m2f - difference_in_simulated_promotion_rate_m2f
+
+"""
+Large simulation of above
+
+"""
+
+large_sim_diff_promo_rate_m2f = []
+
+for _ in range(1000):
+    simulated_results_promoted_female = 0
+    simulated_results_promoted_male = 0
+    
+    for _ in range(simulation_promoted_n):
+        if random.random() < 0.5:
+            simulated_results_promoted_female += 1
+        else:
+            simulated_results_promoted_male += 1
+    
+    simulated_promoted_rate_female = simulated_results_promoted_female / simulation_promoted_n
+    
+    simulated_promoted_rate_male = simulated_results_promoted_male / simulation_promoted_n
+    
+    diff_in_simulated_promotion_rate_m2f = simulated_promoted_rate_male - simulated_promoted_rate_female
+    
+    large_sim_diff_promo_rate_m2f.append(diff_in_simulated_promotion_rate_m2f)
