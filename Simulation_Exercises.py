@@ -107,3 +107,12 @@ for _ in range(1000):
     diff_in_simulated_promotion_rate_m2f = simulated_promoted_rate_male - simulated_promoted_rate_female
     
     large_sim_diff_promo_rate_m2f.append(diff_in_simulated_promotion_rate_m2f)
+
+count_same_diff = 0
+
+for _ in large_sim_diff_promo_rate_m2f:
+    if _ >= difference_observed_and_simulated:
+        count_same_diff += 1
+        
+prob_difference_observed_and_simulated = count_same_diff / 1000
+        
