@@ -3,7 +3,7 @@
 import random
 import numpy as np
 
-def diff_proportion(observations, cat1_column=0, cat2_column=1):
+def proportion_diff(observations, cat1_column=0, cat2_column=1):
     """
     Calculate difference in proportions
     
@@ -20,10 +20,10 @@ def diff_proportion(observations, cat1_column=0, cat2_column=1):
     row_category    column_category
                     c_cat1          c_cat2
     r_cat1          R1C1            R1C2
-    r_cat2          R2C1            R2C2
+    r_cat2          C1R2            C2R2
 
     r_cat1_observations = [R1C1, R1C2...]
-    r_cat2_observations = [R2C1, R2C2...]
+    r_cat2_observations = [C1R2, C2R2...]
     observations = [r_cat1_observations, r_cat_2_observations]
     """
     c_cat1_idx = cat1_column
@@ -36,11 +36,16 @@ def diff_proportion(observations, cat1_column=0, cat2_column=1):
     r_cat2_n = sum(observations[1])
     
     proportion_R1C1 = observations[r_cat1_idx][c_cat1_idx] / r_cat1_n
-    proportion_R2C1 = observations[r_cat2_idx][c_cat1_idx] / r_cat2_n
+    proportion_C1R2 = observations[r_cat2_idx][c_cat1_idx] / r_cat2_n
     
-    proportion_difference = proportion_R1C1 - proportion_R2C1
+    proportion_difference = proportion_R1C1 - proportion_C1R2
+    
+    return proportion_difference
+    
+def proportion_simulation(observations, sim_size=10000, cat1_column=0):
     
     #Form list of just observed values in column category 1
+    c_cat1_idx = cat1_column    
     c_cat1_obs = []
 
     for i in range(len(observations)):
@@ -49,8 +54,6 @@ def diff_proportion(observations, cat1_column=0, cat2_column=1):
     simulated_cat1_n = sum(c_cat1_obs)
     
     large_sim_diff_rate_R1toR2 = []
-    
-    sim_size = 10000
     
     for _ in range(sim_size):
         simulated_results_C1R1 = 0
@@ -62,11 +65,11 @@ def diff_proportion(observations, cat1_column=0, cat2_column=1):
             else:
                 simulated_results_C1R1 += 1
         
-        simulated_rate_R2C1 = simulated_results_C1R2 / simulated_cat1_n
+        simulated_rate_C1R2 = simulated_results_C1R2 / simulated_cat1_n
     
-        simulated_rate_R1C1 = simulated_results_C1R1 / simulated_cat1_n
+        simulated_rate_C1R1 = simulated_results_C1R1 / simulated_cat1_n
     
-        diff_in_simulated_rate_R1toR2 = simulated_rate_R1C1 - simulated_rate_R2C1
+        diff_in_simulated_rate_R1toR2 = simulated_rate_C1R1 - simulated_rate_C1R2
         
         large_sim_diff_rate_R1toR2.append(diff_in_simulated_rate_R1toR2)
 
@@ -81,8 +84,8 @@ def diff_proportion(observations, cat1_column=0, cat2_column=1):
     return ("""
     proportion difference: {}, 
     proportion R1C1: {}, 
-    proportion R2C1: {}, 
+    proportion C1R2: {}, 
     p-value: {}
-    sim_size: {}""".format(proportion_difference, proportion_R1C1, proportion_R2C1, p_value_proportion_difference, sim_size))
+    sim_size: {}""".format(proportion_difference, proportion_R1C1, proportion_C1R2, p_value_proportion_difference, sim_size))
     
 
