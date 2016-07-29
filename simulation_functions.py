@@ -35,10 +35,10 @@ def proportion_diff(observations, cat1_column=0, cat2_column=1):
     r_cat1_n = sum(observations[0])
     r_cat2_n = sum(observations[1])
     
-    proportion_R1C1 = observations[r_cat1_idx][c_cat1_idx] / r_cat1_n
+    proportion_C1R1 = observations[r_cat1_idx][c_cat1_idx] / r_cat1_n
     proportion_C1R2 = observations[r_cat2_idx][c_cat1_idx] / r_cat2_n
     
-    proportion_difference = proportion_R1C1 - proportion_C1R2
+    proportion_difference = proportion_C1R1 - proportion_C1R2
     
     return proportion_difference
     
@@ -75,14 +75,17 @@ def proportion_simulation(observations, sim_size=10000, cat1_column=0):
 
     count_diffs_as_large = 0
     
+    category_proportion_diff = proportion_diff(observations)
+    
     for i in large_sim_diff_rate_R1toR2:
-        if i >= proportion_diff(observations):
+        if i >= category_proportion_diff:
             count_diffs_as_large += 1
     
     p_value_proportion_difference = count_diffs_as_large / sim_size
     
     return ("""
+    proportion difference: {}
     p-value: {}
-    sim_size: {}""".format(p_value_proportion_difference, sim_size))
+    sim_size: {}""".format(category_proportion_diff, p_value_proportion_difference, sim_size))
     
 
