@@ -45,7 +45,7 @@ def proportion_diff(observations, cat1_column=0, cat2_column=1):
 def proportion_simulation(observations, sim_size=10000, cat1_column=0):
     
     #Form list of just observed values in column category 1
-    c_cat1_idx = cat1_column    
+    c_cat1_idx = cat1_column
     c_cat1_obs = []
 
     for i in range(len(observations)):
@@ -76,16 +76,13 @@ def proportion_simulation(observations, sim_size=10000, cat1_column=0):
     count_diffs_as_large = 0
     
     for i in large_sim_diff_rate_R1toR2:
-        if i >= proportion_difference:
+        if i >= proportion_diff(observations):
             count_diffs_as_large += 1
     
     p_value_proportion_difference = count_diffs_as_large / sim_size
     
     return ("""
-    proportion difference: {}, 
-    proportion R1C1: {}, 
-    proportion C1R2: {}, 
     p-value: {}
-    sim_size: {}""".format(proportion_difference, proportion_R1C1, proportion_C1R2, p_value_proportion_difference, sim_size))
+    sim_size: {}""".format(p_value_proportion_difference, sim_size))
     
 
